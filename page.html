@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Yes or No ❤️</title>
+  <style>
+    :root{
+      --bg1:#ffdde1;
+      --bg2:#ee9ca7;
+      --card:#ffffffcc;
+      --text:#2b2b2b;
+      --yes:#ff4d6d;
+      --no:#6c757d;
+      --shadow: 0 18px 60px rgba(0,0,0,.18);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      background: radial-gradient(1200px 800px at 20% 20%, #fff 0%, transparent 55%),
+                  radial-gradient(900px 650px at 80% 30%, #fff 0%, transparent 55%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      overflow:hidden;
+    }
+
+    /* floating blobs */
+    .blob{
+      position:absolute; inset:auto;
+      width:260px; height:260px;
+      background:rgba(255,255,255,.28);
+      filter: blur(0.2px);
+      border-radius: 45% 55% 60% 40% / 55% 45% 55% 45%;
+      animation: floaty 9s ease-in-out infinite;
+      box-shadow: 0 20px 60px rgba(255,255,255,.25) inset;
+    }
+    .blob.b1{left:-60px; top:-60px; animation-delay:-2s}
+    .blob.b2{right:-80px; bottom:-80px; width:320px; height:320px; animation-delay:-4s}
+    .blob.b3{left:55%; top:6%; width:180px; height:180px; animation-delay:-1s}
+    @keyframes floaty{
+      0%,100%{transform:translate(0,0) rotate(0deg)}
+      50%{transform:translate(18px, -14px) rotate(10deg)}
+    }
+
+    .card{
+      width:min(520px, 92vw);
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 22px 22px 18px;
+      position:relative;
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.65);
+      border:1px solid rgba(255,255,255,.8);
+      font-weight:600;
+      font-size: 13px;
+    }
+    .tag .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, #fff 0%, #ff4d6d 40%, #d81b60 100%);
+      box-shadow: 0 0 0 4px rgba(255,77,109,.15);
+    }
+
+    h1{
+      margin: 14px 0 6px;
+      font-size: clamp(22px, 3.8vw, 30px);
+      line-height:1.15;
+      letter-spacing:-0.3px;
+    }
+    p{
+      margin: 0 0 16px;
+      opacity:.9;
+      line-height:1.5;
+    }
+
+    .panel{
+      display:grid;
+      gap:12px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.55);
+      border:1px solid rgba(255,255,255,.75);
+    }
+
+    .row{
+      display:grid;
+      gap:10px;
+    }
+    label{
+      font-weight:700;
+      font-size: 13px;
+      opacity:.9;
+    }
+    select{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.92);
+      font-size: 15px;
+      outline:none;
+    }
+    select:focus{
+      border-color: rgba(255,77,109,.6);
+      box-shadow: 0 0 0 4px rgba(255,77,109,.18);
+    }
+
+    .btns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      padding-top: 4px;
+      position:relative;
+      min-height: 54px;
+    }
+    button{
+      border:none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight:800;
+      font-size: 15px;
+      cursor:pointer;
+      transition: transform .12s ease, filter .12s ease;
+      user-select:none;
+    }
+    button:active{transform: translateY(1px) scale(.99)}
+    .yes{
+      background: linear-gradient(135deg, #ff4d6d, #ff8fab);
+      color:white;
+      box-shadow: 0 14px 26px rgba(255,77,109,.32);
+    }
+    .yes:hover{filter:brightness(1.03)}
+    .no{
+      background: rgba(108,117,125,.12);
+      border: 1px solid rgba(108,117,125,.28);
+      color:#3b3f45;
+    }
+    .no:hover{filter:brightness(1.02)}
+    .hint{
+      font-size: 12.5px;
+      opacity:.8;
+      margin-top: 10px;
+    }
+
+    .result{
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(255,255,255,.85);
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .result.show{display:flex}
+    .result b{font-size: 15px}
+    .pill{
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight:800;
+      background: rgba(255,77,109,.16);
+      color:#b31237;
+      border:1px solid rgba(255,77,109,.22);
+      white-space:nowrap;
+    }
+
+    /* Hearts layer */
+    .fx-layer{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index: 10;
+    }
+    .heart{
+      position:absolute;
+      left: var(--x);
+      bottom: -30px;
+      width: var(--s);
+      height: var(--s);
+      transform: translate(-50%, 0) rotate(45deg);
+      background: radial-gradient(circle at 30% 30%, #fff 0%, rgba(255,255,255,.2) 18%, transparent 45%),
+                  linear-gradient(135deg, rgba(255,77,109,1), rgba(255,143,171,1));
+      border-radius: 10px;
+      opacity: 0.95;
+      animation: rise var(--t) ease-in forwards;
+      filter: drop-shadow(0 10px 18px rgba(255,77,109,.35));
+    }
+    .heart::before,
+    .heart::after{
+      content:"";
+      position:absolute;
+      width:100%;
+      height:100%;
+      background: inherit;
+      border-radius: 50%;
+    }
+    .heart::before{ left:-50%; top:0; }
+    .heart::after{ left:0; top:-50%; }
+
+    @keyframes rise{
+      0%   { transform: translate(-50%, 0) rotate(45deg) scale(1); opacity:0.0; }
+      10%  { opacity:0.95; }
+      70%  { opacity:0.9; }
+      100% { transform: translate(calc(-50% + var(--dx)), calc(-1 * var(--h))) rotate(45deg) scale(0.9); opacity:0; }
+    }
+
+    /* Confetti */
+    .confetti{
+      position:absolute;
+      left: var(--x);
+      top: -10px;
+      width: 10px;
+      height: 16px;
+      border-radius: 4px;
+      background: var(--c);
+      opacity: .95;
+      transform: translate(-50%, 0) rotate(var(--r));
+      animation: fall var(--t) linear forwards;
+      z-index: 11;
+    }
+    @keyframes fall{
+      0%{ transform: translate(-50%, 0) rotate(var(--r)); }
+      100%{ transform: translate(calc(-50% + var(--dx)), var(--h)) rotate(calc(var(--r) + 220deg)); opacity:0.1; }
+    }
+
+    /* Footer */
+    .footer{
+      margin-top: 12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      font-size:12px;
+      opacity:.75;
+    }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      padding: 2px 7px;
+      border-radius: 8px;
+      border:1px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.7);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+
+  <div class="card" id="card">
+    <div class="fx-layer" id="fx"></div>
+
+    <span class="tag"><span class="dot"></span> Chọn phát ik</span>
+
+    <h1 id="question">Tối thứ 6 mình đi ăn được hong? </h1>
+    <p>Chọn 1 option cho vui rồi bấm <b>Yes</b> hoặc <b>No</b> nha.</p>
+
+    <div class="panel">
+      <div class="row">
+        <label for="choice">Bạn chọn điều gì cho thứ 6?</label>
+        <select id="choice">
+          <option value="Anh qua đón em">Anh qua đón em</option>
+          <option value="Em đợi anh qua đón">Em đợi anh qua đón</option>
+    
+        </select>
+      </div>
+
+      <div class="btns" id="btns">
+        <button class="no" id="noBtn" type="button">No 🙃</button>
+        <button class="yes" id="yesBtn" type="button">Yes! </button>
+      </div>
+
+      <div class="result" id="result">
+        <div>
+          <b id="resultText">Yay!</b>
+          <div class="hint" id="subText">Đã chọn: ...</div>
+        </div>
+        <span class="pill">ucii meow</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>Mẹo: bấm <span class="kbd">Enter</span> để Yes</div>
+
+    </div>
+  </div>
+
+  <script>
+    const fx = document.getElementById("fx");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn  = document.getElementById("noBtn");
+    const choice = document.getElementById("choice");
+    const result = document.getElementById("result");
+    const resultText = document.getElementById("resultText");
+    const subText = document.getElementById("subText");
+    const question = document.getElementById("question");
+
+    let noDodges = 0;
+    let fxRunning = false;
+
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+
+    function spawnHeartBurst(count = 22){
+      const w = fx.clientWidth;
+      for(let i=0;i<count;i++){
+        const h = document.createElement("div");
+        h.className = "heart";
+        const x = rand(40, w-40);
+        const size = rand(14, 28);
+        const t = rand(2.2, 4.2);
+        const dx = rand(-120, 120);
+        const height = rand(320, 620);
+
+        h.style.setProperty("--x", x + "px");
+        h.style.setProperty("--s", size + "px");
+        h.style.setProperty("--t", t + "s");
+        h.style.setProperty("--dx", dx + "px");
+        h.style.setProperty("--h", height + "px");
+
+        fx.appendChild(h);
+        setTimeout(()=>h.remove(), (t*1000) + 50);
+      }
+    }
+
+    function spawnConfetti(count = 36){
+      const w = fx.clientWidth;
+      const hMax = fx.clientHeight + 220;
+      const colors = ["#ff4d6d","#ff8fab","#ffd6e0","#6ee7ff","#a7f3d0","#fde68a","#c4b5fd"];
+      for(let i=0;i<count;i++){
+        const c = document.createElement("div");
+        c.className = "confetti";
+        const x = rand(10, w-10);
+        const t = rand(1.8, 3.2);
+        const dx = rand(-140, 140);
+        const hh = rand(260, hMax);
+        const r = rand(-45, 45) + "deg";
+        const col = colors[Math.floor(Math.random()*colors.length)];
+
+        c.style.setProperty("--x", x + "px");
+        c.style.setProperty("--t", t + "s");
+        c.style.setProperty("--dx", dx + "px");
+        c.style.setProperty("--h", hh + "px");
+        c.style.setProperty("--r", r);
+        c.style.setProperty("--c", col);
+
+        fx.appendChild(c);
+        setTimeout(()=>c.remove(), (t*1000) + 50);
+      }
+    }
+
+    function startFx(){
+      if (fxRunning) return;
+      fxRunning = true;
+
+      result.classList.add("show");
+      resultText.textContent = "YESSS! 💖";
+      subText.textContent = "Đã chọn: " + choice.value;
+
+      // burst đầu
+      spawnConfetti(48);
+      spawnHeartBurst(28);
+
+      // mưa tim liên tục một chút
+      let bursts = 0;
+      const timer = setInterval(()=>{
+        spawnHeartBurst(18);
+        bursts++;
+        if(bursts >= 6){
+          clearInterval(timer);
+          fxRunning = false;
+        }
+      }, 450);
+
+      question.textContent = "ucii meoooow 😘";
+      yesBtn.disabled = true;
+      noBtn.disabled = true;
+      yesBtn.style.opacity = 0.75;
+      noBtn.style.opacity = 0.75;
+    }
+
+    function dodgeNo(){
+      noDodges++;
+      const area = document.getElementById("btns");
+      const rect = area.getBoundingClientRect();
+
+      // giới hạn để nút không chạy ra ngoài vùng card
+      const maxX = Math.max(0, rect.width - noBtn.offsetWidth);
+      const maxY = Math.max(0, rect.height - noBtn.offsetHeight);
+
+      // random vị trí nhẹ nhàng
+      const x = rand(0, maxX);
+      const y = rand(0, maxY);
+
+      noBtn.style.position = "absolute";
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+
+      if (noDodges === 1) question.textContent = "Ơ kìa… chọn lại đi mà 😳";
+      if (noDodges === 3) question.textContent = "No cứ chạy hoài… thử Yes xem? 🥺";
+      if (noDodges >= 6) question.textContent = "Thôi màaaa bấm Yes nha ";
+    }
+
+    yesBtn.addEventListener("click", startFx);
+
+    // hover/click vào No thì né
+    noBtn.addEventListener("mouseenter", dodgeNo);
+    noBtn.addEventListener("click", dodgeNo);
+
+    // Enter để Yes
+    document.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" && !yesBtn.disabled) startFx();
+    });
+
+    // Nếu user đổi lựa chọn, cập nhật subText (nếu đã show)
+    choice.addEventListener("change", ()=>{
+      if (result.classList.contains("show")){
+        subText.textContent = "Đã chọn: " + choice.value;
+      }
+    });
+  </script>
+</body>
+</html>
